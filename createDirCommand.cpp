@@ -14,8 +14,11 @@ void createDirCommand(){
     std::string destinationDir =destinationFolder.append("/").append(dirName);
     int status = mkdir(destinationDir.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if(status < 0){
-        std::cout<<"couldn't open file "<<destinationDir<<std::endl;
+        std::cout<<"couldn't create dir "<<destinationDir<<std::endl;
         return;
     }
-
+    if(chmod(destinationDir.c_str(),0777)<0){
+        std::cout<<"couldn't set mode to dir "<<destinationDir<<std::endl;
+        return;
+    }
 }

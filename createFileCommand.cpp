@@ -15,10 +15,13 @@ void createFileCommand(){
         destinationFolder = relativeToAbsolute(destinationFolder);
     std::string fileName = arguments[0];
     std::string destinationFile =destinationFolder.append("/").append(fileName);
-    int fdDest = open(destinationFile.c_str(),O_WRONLY|O_CREAT);
+    int fdDest = open(destinationFile.c_str(),O_RDWR|O_CREAT,0777);
     if(fdDest < 0){
         std::cout<<"couldn't open file "<<destinationFile<<std::endl;
         return;
     }
-
+    if(chmod(destinationFile.c_str(),0777)){
+        std::cout<<"couldn't set mode to "<<destinationFile<<std::endl;
+        return;
+    }
 }
