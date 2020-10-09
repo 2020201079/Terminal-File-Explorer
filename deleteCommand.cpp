@@ -33,13 +33,15 @@ void deleteDirCommandHelper(std::string dirPath){
     }
 
     while((de = readdir(dr))!=NULL){
-        if(de->d_name=="." || de->d_name=="..")
+        if(std::string(de->d_name)=="." || std::string(de->d_name)=="..")
             continue;
         if(de->d_type==DT_DIR){
-            deleteDirCommandHelper(dirPath.append(de->d_name));
+            std::string dirInside = dirPath;
+            deleteDirCommandHelper(dirInside.append("/").append(de->d_name));
         }
         else{
-            deleteFileCommandHelper(dirPath.append(de->d_name));
+            std::string filePath = dirPath; 
+            deleteFileCommandHelper(filePath.append("/").append(de->d_name));
         }
         //printf("%s\n",de->d_name);
     }
