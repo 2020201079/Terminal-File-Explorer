@@ -10,8 +10,49 @@ void deleteFileCommand(){
     std::string filePath = arguments[0];
     if(isPathRelative(filePath)) //if not the whole path will be provided 
         filePath = relativeToAbsolute(filePath);
-    
+    deleteFileCommandHelper(filePath);
+}
+
+void deleteFileCommandHelper(std::string filePath){
     if(remove(filePath.c_str()) < 0){
         std::cout<<"error deleting file"<<std::endl;
+    }
+}
+
+void deleteDirCommand(){
+    std::cout<<"Need to implement delete dir command !"<<std::endl;
+    std::string input;
+    getline(std::cin,input);
+    std::vector<std::string> arguments = getArgs(input);
+    if(arguments.size()!=1){
+        std::cout<<"Number of arguments is wrong"<<std::endl;
+    }
+    std::string dirPath = arguments[0];
+    if(dirPath == "." || dirPath==".." || dirPath=="~/"){
+        std::cout<<"shouldn't delete curr dir"<<std::endl;
+        return;
+    }
+    if(isPathRelative(dirPath)) //if not the whole path will be provided 
+        dirPath = relativeToAbsolute(dirPath);
+    deleteDirCommandHelper(dirPath);
+}
+
+void deleteDirCommandHelper(std::string dirPath){
+    struct dirent *de; //pointer for directory entry
+    DIR *dr = opendir(dirPath.c_str());
+
+    if(dr == NULL){
+        die(dirPath.append("could not open for deleting ").c_str());
+        return;
+    }
+
+    while((de = readdir(dr))!=NULL){
+        if(de->d_type==DT_DIR){
+            deleteDirCommandHelper(dirPath.append(de->d_name));
+        }
+        else{
+            deleteFileCommandHelper(dirPath.append(de->d_name));
+        }
+        //printf("%s\n",de->d_name);
     }
 }

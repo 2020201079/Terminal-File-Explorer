@@ -35,6 +35,8 @@ extern struct editorConfig E;
 void copyCommand();
 void createFileCommand();
 void createDirCommand();
+void deleteFileCommand();
+void deleteDirCommand();
 void moveCommand();
 void renameCommand();
 std::vector<std::string> getArgs(std::string input);

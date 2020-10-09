@@ -149,6 +149,10 @@ void enterCommandMode(){
             createFileCommand();
         else if(cmd=="create_dir")
             createDirCommand();
+        else if(cmd=="delete_file")
+            deleteFileCommand();
+        else if(cmd=="delete_dir")
+            deleteDirCommand();
         else
             std::cout<<"Enter a valid command "<<std::endl;
     }
