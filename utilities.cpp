@@ -115,3 +115,36 @@ std::string relativeToAbsolute(std::string path){
         return "";
     }
 }
+
+void printEntry(std::string e){
+        std::string compPath = getCompletePath(e);
+        struct stat fileStatus;
+        if(stat(compPath.c_str(),&fileStatus)==-1){
+            die(compPath.append(" this path failed").c_str());
+        }
+        std::string permissions="";
+        permissions.append((S_ISDIR(fileStatus.st_mode)) ? "d" : "-");
+        permissions.append((fileStatus.st_mode & S_IRUSR) ? "r" : "-");
+        permissions.append((fileStatus.st_mode & S_IWUSR) ? "w" : "-");
+        permissions.append((fileStatus.st_mode & S_IXUSR) ? "x" : "-");
+        permissions.append((fileStatus.st_mode & S_IRGRP) ? "r" : "-");
+        permissions.append((fileStatus.st_mode & S_IWGRP) ? "w" : "-");
+        permissions.append((fileStatus.st_mode & S_IXGRP) ? "x" : "-");
+        permissions.append((fileStatus.st_mode & S_IROTH) ? "r" : "-");
+        permissions.append((fileStatus.st_mode & S_IWOTH) ? "w" : "-");
+        permissions.append((fileStatus.st_mode & S_IXOTH) ? "x" : "-");
+
+        struct passwd *pw = getpwuid(fileStatus.st_uid);
+        if(pw == NULL) die("getpwuid failed");
+        std::string user = pw->pw_name;
+
+        struct group *gr = getgrgid(fileStatus.st_gid);
+        if(gr == NULL) die("getgrgid failed");
+        std::string group = gr->gr_name;
+
+        std::string size = std::to_string(fileStatus.st_size);
+        size.append("Bytes");
+
+        E.outputBuffer.append(" ").append(e).append(" ").append(size).append(" ").append(" ").append(user).append(" ").append(group).append(" ").append(permissions).append("\r\n");
+        
+}

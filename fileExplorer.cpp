@@ -46,11 +46,8 @@ int editorReadKey() {
 
 /*** output ***/
 
-void printDir(std::string path){
-    E.outputBuffer.clear();
+void readDir(std::string path){
     E.currDirFiles.clear();
-    E.outputBuffer.append("\x1b[2J",4);//clear screen
-    E.outputBuffer.append("\x1b[H"); //sets cursor position 
     struct dirent *de; //pointer for directory entry
 
     DIR *dr = opendir(path.c_str());
@@ -62,51 +59,27 @@ void printDir(std::string path){
 
     while((de = readdir(dr))!=NULL){
         E.currDirFiles.push_back(de->d_name);
-        //printf("%s\n",de->d_name);
     }
     sort(E.currDirFiles.begin(),E.currDirFiles.end());
-    for(auto e:E.currDirFiles){
-        std::string compPath = getCompletePath(e);
-        struct stat fileStatus;
-        if(stat(compPath.c_str(),&fileStatus)==-1){
-            die(compPath.append(" this path failed").c_str());
-        }
-        std::string permissions="";
-        permissions.append((S_ISDIR(fileStatus.st_mode)) ? "d" : "-");
-        permissions.append((fileStatus.st_mode & S_IRUSR) ? "r" : "-");
-        permissions.append((fileStatus.st_mode & S_IWUSR) ? "w" : "-");
-        permissions.append((fileStatus.st_mode & S_IXUSR) ? "x" : "-");
-        permissions.append((fileStatus.st_mode & S_IRGRP) ? "r" : "-");
-        permissions.append((fileStatus.st_mode & S_IWGRP) ? "w" : "-");
-        permissions.append((fileStatus.st_mode & S_IXGRP) ? "x" : "-");
-        permissions.append((fileStatus.st_mode & S_IROTH) ? "r" : "-");
-        permissions.append((fileStatus.st_mode & S_IWOTH) ? "w" : "-");
-        permissions.append((fileStatus.st_mode & S_IXOTH) ? "x" : "-");
-
-        struct passwd *pw = getpwuid(fileStatus.st_uid);
-        if(pw == NULL) die("getpwuid failed");
-        std::string user = pw->pw_name;
-
-        struct group *gr = getgrgid(fileStatus.st_gid);
-        if(gr == NULL) die("getgrgid failed");
-        std::string group = gr->gr_name;
-
-        std::string size = std::to_string(fileStatus.st_size);
-        size.append("Bytes");
-
-        E.outputBuffer.append(" ").append(e).append(" ").append(size).append(" ").append(" ").append(user).append(" ").append(group).append(" ").append(permissions).append("\r\n");
-        
-    }
-    E.cy=0; // set cursor at the start
     closedir(dr);
 }
 
-void editorRefreshScreen() {
-    //std::string outputBuffer="";
+void printDir(){ // just prints what ever is present in E.currDirFiles
+    E.outputBuffer.clear();
+    E.outputBuffer.append("\x1b[2J",4);//clear screen
+    E.outputBuffer.append("\x1b[H"); //sets cursor position 
+    //need to print in chunks of row size and scroll with k or l
+    for(auto e:E.currDirFiles){
+        printEntry(e);
+    }
+    E.cy=0; // set cursor at the start
+    
+}
 
+void editorRefreshScreen() {
     std::string cursorPositionCmd = "\x1b["+ std::to_string(E.cy+1) + ";" + std::to_string(1)+"H";
-    E.outputBuffer.append(cursorPositionCmd);
     write(STDOUT_FILENO,E.outputBuffer.c_str(),E.outputBuffer.length());
+    write(STDOUT_FILENO,cursorPositionCmd.c_str(),cursorPositionCmd.length());
 }
 
 /*** directory paths ***/
@@ -195,7 +168,8 @@ void editorProcessKeypress() {
         std::string selectedPath =getFileName();
         if(isDirectory(selectedPath)){
             E.root = selectedPath;
-            printDir(selectedPath);
+            readDir(selectedPath);
+            printDir();
         } 
         /*else if(isTextFile(selectedPath)){
             //open via vi
@@ -222,10 +196,12 @@ void initEditor() {
 int main(int argc, char* argv[]){
     initEditor(); //initialize all feilds in E
     if(argc==1){
-        printDir(E.root);
+        readDir(E.root);
+        printDir();
     }
     else if(argc == 2){
-        printDir(argv[1]);
+        readDir(argv[1]);
+        printDir();
     }
     else{
         std::cout<<"incorrect number of arguments"<<std::endl;
