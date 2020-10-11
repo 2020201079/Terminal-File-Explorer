@@ -116,7 +116,7 @@ std::string relativeToAbsolute(std::string path){
     }
 }
 
-void printEntry(std::string e){
+void printEntry(std::string e,int lineNo){
         std::string compPath = getCompletePath(e);
         struct stat fileStatus;
         if(stat(compPath.c_str(),&fileStatus)==-1){
@@ -145,6 +145,6 @@ void printEntry(std::string e){
         std::string size = std::to_string(fileStatus.st_size);
         size.append("Bytes");
 
-        E.outputBuffer.append(" ").append(e).append(" ").append(size).append(" ").append(" ").append(user).append(" ").append(group).append(" ").append(permissions).append("\r\n");
+        E.outputBuffer.append(" ").append(std::to_string(lineNo)).append(" ").append(e).append(" ").append(size).append(" ").append(" ").append(user).append(" ").append(group).append(" ").append(permissions).append("\r\n");
         
 }

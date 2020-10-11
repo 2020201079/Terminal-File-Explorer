@@ -12,7 +12,11 @@ enum editorKey {
   ARROW_RIGHT,
   COLON,
   ESCAPE,
-  ENTER
+  ENTER,
+  KEY_K,
+  KEY_L,
+  BACK_SPACE,
+  HOME
 };
 
 int editorReadKey() {
@@ -27,6 +31,15 @@ int editorReadKey() {
     if(c == '\x3a'){
         return COLON;
     }
+    if(c == '\x7f'){
+        return BACK_SPACE;
+    }
+    if(c=='k' && E.overflow==true) // only detect k in overflow condition
+        return KEY_K;
+    if(c=='l' && E.overflow==true) // only detect l in overflow condition
+        return KEY_L;
+    if(c=='h')
+        return HOME;
     if (c == '\x1b') {
         char seq[3];
         if (read(STDIN_FILENO, &seq[0], 1) != 1) return ESCAPE;
@@ -61,23 +74,29 @@ void readDir(std::string path){
         E.currDirFiles.push_back(de->d_name);
     }
     sort(E.currDirFiles.begin(),E.currDirFiles.end());
+    if(E.currDirFiles.size() > E.screenrows-1) // at once i am printing (E.screenrows-1)
+        E.overflow = true;
+    else
+        E.overflow = false;
     closedir(dr);
 }
 
 void printDir(){ // just prints what ever is present in E.currDirFiles
+    int lineNo = 0;
     E.outputBuffer.clear();
     E.outputBuffer.append("\x1b[2J",4);//clear screen
     E.outputBuffer.append("\x1b[H"); //sets cursor position 
     //need to print in chunks of row size and scroll with k or l
     for(auto e:E.currDirFiles){
-        printEntry(e);
+        lineNo++;
+        printEntry(e,lineNo); // it automatically adds next line also
     }
     E.cy=0; // set cursor at the start
-    
 }
 
 void editorRefreshScreen() {
     std::string cursorPositionCmd = "\x1b["+ std::to_string(E.cy+1) + ";" + std::to_string(1)+"H";
+    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize"); // constantly updating win size
     write(STDOUT_FILENO,E.outputBuffer.c_str(),E.outputBuffer.length());
     write(STDOUT_FILENO,cursorPositionCmd.c_str(),cursorPositionCmd.length());
 }
@@ -150,6 +169,7 @@ void editorMoveCursor(int key) {
 
 void editorProcessKeypress() {
   int c = editorReadKey();
+  std::string selectedPath;
   switch (c) {
     case 'q':
         write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -164,8 +184,27 @@ void editorProcessKeypress() {
     case ESCAPE:
     case COLON:
         enterCommandMode();
-    case ENTER: // going to parent directory when enter is pressed
-        std::string selectedPath =getFileName();
+    case KEY_K:
+        enterCommandMode();
+        break;
+    case KEY_L:
+        enterCommandMode();
+        break;
+    case HOME:
+        E.root = E.home;
+        readDir(E.home);
+        printDir();
+        break;
+    case BACK_SPACE:
+        selectedPath = getParent(E.root);
+        if(isDirectory(selectedPath)){
+            E.root = selectedPath;
+            readDir(selectedPath);
+            printDir();
+        }
+        break; 
+    case ENTER:
+        selectedPath =getFileName();
         if(isDirectory(selectedPath)){
             E.root = selectedPath;
             readDir(selectedPath);
@@ -186,6 +225,7 @@ void editorProcessKeypress() {
 void initEditor() {
     char cwd[1024];
     getcwd(cwd,sizeof(cwd));
+    E.home= std::string(cwd);
     E.root= std::string(cwd);
     E.cy = 0;
     E.outputBuffer="";

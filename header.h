@@ -27,6 +27,8 @@ struct editorConfig {
     std::string outputBuffer;
     std::vector<std::string> currDirFiles;
     bool normalMode = true;
+    bool overflow;
+    std::string home;
 };
 
 extern struct editorConfig E;
@@ -49,4 +51,4 @@ std::string getParent(std::string path); // returns absolute path
 std::string getCompletePath(std::string fileName); // returns absolute path until file name
 bool isPathRelative(std::string path);//check if it starts with '~' or '.'
 std::string relativeToAbsolute(std::string path);
-void printEntry(std::string e);
+void printEntry(std::string e,int lineNo);
