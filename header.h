@@ -29,6 +29,9 @@ struct editorConfig {
     bool normalMode = true;
     bool overflow;
     std::string home;
+    std::vector<std::string>::iterator endPosition;
+    std::vector<std::string>::iterator startPosition;
+    int lineNo;
 };
 
 extern struct editorConfig E;

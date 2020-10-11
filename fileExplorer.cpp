@@ -48,6 +48,8 @@ int editorReadKey() {
         switch (seq[1]) {
             case 'A': return ARROW_UP;
             case 'B': return ARROW_DOWN;
+            case 'C': return ARROW_RIGHT;
+            case 'D': return ARROW_LEFT;
             }
         }
         //return '\x1b';
@@ -82,17 +84,53 @@ void readDir(std::string path){
 }
 
 void printDir(){ // just prints what ever is present in E.currDirFiles
-    int lineNo = 0;
+    E.lineNo = 0;
     E.outputBuffer.clear();
     E.outputBuffer.append("\x1b[2J",4);//clear screen
     E.outputBuffer.append("\x1b[H"); //sets cursor position 
-    //need to print in chunks of row size and scroll with k or l
+    E.endPosition = E.currDirFiles.begin();
+    E.startPosition = E.currDirFiles.begin();
+    for(;E.endPosition!=E.currDirFiles.end() && E.lineNo<E.screenrows-1;E.endPosition++){
+        E.lineNo++;
+        printEntry(*E.endPosition,E.lineNo);
+    }
+    /*
     for(auto e:E.currDirFiles){
         lineNo++;
         printEntry(e,lineNo); // it automatically adds next line also
-    }
+    }*/
     E.cy=0; // set cursor at the start
 }
+
+void displayPrevSection(){
+    int lineNo = 0;
+    if(E.startPosition == E.currDirFiles.begin())
+        return;
+    E.lineNo -= (E.endPosition - E.startPosition);
+    E.startPosition -= E.screenrows-1;
+    E.lineNo -= (E.screenrows-1);
+    E.endPosition = E.startPosition;
+    for(;E.endPosition!=E.currDirFiles.end() && lineNo<E.screenrows-1;E.endPosition++){
+        lineNo++;
+        E.lineNo++;
+        printEntry(*E.endPosition,E.lineNo);
+    }
+};
+
+void displayNextSection(){
+    if(E.endPosition == E.currDirFiles.end())
+        return;
+    E.startPosition = E.endPosition;
+    E.outputBuffer.clear();
+    E.outputBuffer.append("\x1b[2J",4);//clear screen
+    E.outputBuffer.append("\x1b[H"); //sets cursor position 
+    int lineNo=0;    
+    for(;E.endPosition!=E.currDirFiles.end() && lineNo<E.screenrows-1;E.endPosition++){
+        lineNo++;
+        E.lineNo++;
+        printEntry(*E.endPosition,E.lineNo);
+    }
+};
 
 void editorRefreshScreen() {
     std::string cursorPositionCmd = "\x1b["+ std::to_string(E.cy+1) + ";" + std::to_string(1)+"H";
@@ -160,7 +198,7 @@ void editorMoveCursor(int key) {
             }
             break;
         case ARROW_DOWN:
-            if (E.cy != E.screenrows - 1 && E.cy < E.currDirFiles.size()-1) {
+            if (E.cy != E.screenrows - 2 && E.cy < E.currDirFiles.size()-1) {
                 E.cy++;
             }
             break;
@@ -185,10 +223,12 @@ void editorProcessKeypress() {
     case COLON:
         enterCommandMode();
     case KEY_K:
-        enterCommandMode();
+        displayPrevSection();
+        //enterCommandMode();
         break;
     case KEY_L:
-        enterCommandMode();
+        displayNextSection();
+        //enterCommandMode();
         break;
     case HOME:
         E.root = E.home;
