@@ -152,6 +152,15 @@ void printEntry(std::string e,int lineNo){
         std::string size = std::to_string(fileStatus.st_size);
         size.append("Bytes");
 
-        E.outputBuffer.append(" ").append(std::to_string(lineNo)).append(" ").append(e).append(" ").append(size).append(" ").append(" ").append(user).append(" ").append(group).append(" ").append(permissions).append("\r\n");
-        
+        char* timeModified = ctime(&fileStatus.st_mtime);
+        timeModified[strlen(timeModified) - 1] = '\0';
+        //
+        E.outputBuffer.append(std::to_string(lineNo)).append(std::string(3-std::to_string(lineNo).size(),' '))\
+                      .append(" ").append(permissions)\
+                      .append(" ").append(user)\
+                      .append(" ").append(group)\
+                      .append(" ").append(size).append(std::string(12-size.size(),' '))\
+                      .append(" ").append(std::string(timeModified))\
+                      .append(" ").append(e)\
+                      .append(" ").append("\r\n");
 }

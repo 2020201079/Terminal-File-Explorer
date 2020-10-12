@@ -94,11 +94,6 @@ void printDir(){ // just prints what ever is present in E.currDirFiles
         E.lineNo++;
         printEntry(*E.endPosition,E.lineNo);
     }
-    /*
-    for(auto e:E.currDirFiles){
-        lineNo++;
-        printEntry(e,lineNo); // it automatically adds next line also
-    }*/
     E.cy=0; // set cursor at the start
 }
 
