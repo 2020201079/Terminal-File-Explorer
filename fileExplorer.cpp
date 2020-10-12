@@ -250,11 +250,15 @@ void editorProcessKeypress() {
             readDir(selectedPath);
             printDir();
         } 
-        /*else if(isTextFile(selectedPath)){
-            //open via vi
-        }*/
+        else if(isFile(selectedPath)){
+           pid_t id = fork();
+           if(id == 0){ // child process
+               execlp("xdg-open","xdg-open",selectedPath.c_str(),NULL);
+               exit(0);
+           }
+        }
         else{
-            // should cout at bottom line file not supported to open
+            // dunno file type 
         }
         break;
   }
@@ -286,7 +290,7 @@ int main(int argc, char* argv[]){
     else{
         std::cout<<"incorrect number of arguments"<<std::endl;
     }
-    
+
     enableRawMode();
 
     while (1){

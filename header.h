@@ -46,6 +46,7 @@ void moveCommand();
 void renameCommand();
 std::vector<std::string> getArgs(std::string input);
 bool isDirectory(std::string path);
+bool isFile(std::string path);
 void die(const char *s);
 void enableRawMode();
 void disableRawMode();

@@ -29,8 +29,15 @@ void die(const char *s) {
 bool isDirectory(std::string path) {
     struct stat statbuf;
     if (stat(path.c_str(), &statbuf) != 0)
-        die(path.c_str());
+        die(path.append(" stat failed in isDirectory ").c_str());
     return S_ISDIR(statbuf.st_mode);
+}
+
+bool isFile(std::string path) {
+    struct stat statbuf;
+    if (stat(path.c_str(), &statbuf) != 0)
+        die(path.append(" stat failed in isFile ").c_str());
+    return S_ISREG(statbuf.st_mode);
 }
 
 void enableRawMode(){
