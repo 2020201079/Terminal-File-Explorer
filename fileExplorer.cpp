@@ -115,6 +115,7 @@ void displayPrevSection(){
         E.lineNo++;
         printEntry(*E.endPosition,E.lineNo);
     }
+    E.cy=0; // set cursor at the start
 };
 
 void displayNextSection(){
@@ -128,8 +129,9 @@ void displayNextSection(){
     for(;E.endPosition!=E.currDirFiles.end() && lineNo<E.screenrows-1;E.endPosition++){
         lineNo++;
         E.lineNo++;
-        printEntry(*E.endPosition,E.lineNo);
+        printEntry(*E.endPosition,E.lineNo); // appends to buffer
     }
+    E.cy=0;  
 };
 
 void editorRefreshScreen() {
@@ -144,15 +146,31 @@ void editorRefreshScreen() {
 
 
 std::string getFileName(){ // should return path of cursor location
-    std::string result=E.root;
-    if(E.currDirFiles[E.cy] == "..")
-        return getParent(result);
-    else if(E.currDirFiles[E.cy] == "."){
-        return result;
+    if(!E.overflow){
+        std::string result=E.root;
+        if(E.currDirFiles[E.cy] == "..")
+            return getParent(result);
+        else if(E.currDirFiles[E.cy] == "."){
+            return result;
+        }
+        else {
+            return result.append("/").append(E.currDirFiles[E.cy]);
+        }
     }
     else {
-        return result.append("/").append(E.currDirFiles[E.cy]);
+        auto currPointer = E.startPosition + E.cy;
+        std::string result=E.root;
+        if(*currPointer == "..")
+            return getParent(result);
+        else if(*currPointer == "."){
+            return result;
+        }
+        else {
+            return result.append("/").append(*currPointer);
+        }
+
     }
+
 }
 
 /*** command mode ***/
@@ -198,8 +216,16 @@ void editorMoveCursor(int key) {
             }
             break;
         case ARROW_DOWN:
-            if (E.cy != E.screenrows - 2 && E.cy < E.currDirFiles.size()-1) {
-                E.cy++;
+            if(!E.overflow){
+                if (E.cy != E.screenrows - 2 && E.cy < E.currDirFiles.size()-1) {
+                    E.cy++;
+                }
+            }
+            else{
+                auto currPointer = E.startPosition + E.cy;
+                if (E.cy != E.screenrows - 2 && E.cy < E.currDirFiles.size()-1 && currPointer != E.currDirFiles.end()-1) {
+                    E.cy++;
+                }
             }
             break;
   }
