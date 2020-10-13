@@ -10,5 +10,9 @@ void gotoCommand(){
     std::string destinationFolder = arguments.back();
     if(isPathRelative(destinationFolder))
         destinationFolder = relativeToAbsolute(destinationFolder);
+    else{
+        auto temp = E.root;
+        destinationFolder = temp.append("/").append(destinationFolder);
+    }
     E.root = destinationFolder;
 }

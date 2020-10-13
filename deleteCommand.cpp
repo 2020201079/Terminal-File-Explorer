@@ -15,13 +15,17 @@ void deleteFileCommand(){
     std::string filePath = arguments[0];
     if(isPathRelative(filePath)) //if not the whole path will be provided 
         filePath = relativeToAbsolute(filePath);
+    else{
+        auto x = E.root;
+        filePath = x.append("/").append(filePath);
+    }
     deleteFileCommandHelper(filePath);
 }
 
 
 
 void deleteDirCommandHelper(std::string dirPath){
-    std::cout<<"deleteFileCommandHelper is called"<<std::endl;
+    std::cout<<"deleteDirCommandHelper is called"<<std::endl;
     struct dirent *de; //pointer for directory entry
     std::cout<<"Following dir will be deleted "<<std::endl;
     std::cout<<dirPath<<std::endl;
@@ -66,6 +70,10 @@ void deleteDirCommand(){
     }
     if(isPathRelative(dirPath)) //if not the whole path will be provided 
         dirPath = relativeToAbsolute(dirPath);
+    else{
+        auto x = E.root;
+        dirPath = x.append("/").append(dirPath);
+    }
     deleteDirCommandHelper(dirPath);
 }
 

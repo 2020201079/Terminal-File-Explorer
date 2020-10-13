@@ -102,7 +102,7 @@ std::string relativeToAbsolute(std::string path){
     std::string result;
     if(path[0] == '~'){ // path starts with ~/foobar should remove ~ and replace root
         result=path.substr(1,path.size()-1);
-        result=E.root+result;
+        result=E.home+result;
         return result;
     }
     else if(path[0]=='.' && path[1]=='.'){
