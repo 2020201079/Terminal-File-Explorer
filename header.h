@@ -32,6 +32,7 @@ struct editorConfig {
     std::vector<std::string>::iterator endPosition;
     std::vector<std::string>::iterator startPosition;
     int lineNo;
+    std::string status=" ";
 };
 
 extern struct editorConfig E;
@@ -47,6 +48,7 @@ void deleteDirCommand();
 void gotoCommand();
 void moveCommand();
 void renameCommand();
+bool searchCommand();
 std::vector<std::string> getArgs(std::string input);
 bool isDirectory(std::string path);
 bool isFile(std::string path);

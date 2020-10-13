@@ -179,7 +179,8 @@ void enterCommandMode(){
     E.normalMode = false;
     std::string commandModeOutput = E.outputBuffer;
     std::string cursorPositionCmd = "\x1b["+ std::to_string(E.screenrows-1) + ";" + std::to_string(1)+"H";
-    commandModeOutput.append(cursorPositionCmd);//goto last line 
+    commandModeOutput.append(cursorPositionCmd);//goto last line
+    commandModeOutput.append(E.status); 
     commandModeOutput.append("\x1b[0K");// clear line from cursor right
      
     commandModeOutput.append("command mode :");
@@ -224,6 +225,16 @@ void enterCommandMode(){
         }
         else if(cmd=="goto"){
             gotoCommand();
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="search"){
+            bool found = searchCommand();
+            if(found){
+                E.status = "found ";
+            }
+            else{
+                E.status = "File not found";
+            }
             updateDisplayCommandMode();
         }
         else{
