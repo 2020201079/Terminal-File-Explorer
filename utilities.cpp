@@ -157,8 +157,8 @@ void printEntry(std::string e,int lineNo){
         //
         E.outputBuffer.append(std::to_string(lineNo)).append(std::string(3-std::to_string(lineNo).size(),' '))\
                       .append(" ").append(permissions)\
-                      .append(" ").append(user)\
-                      .append(" ").append(group)\
+                      .append(" ").append(user).append(std::string(10-user.size(),' '))\
+                      .append(" ").append(group).append(std::string(10-user.size(),' '))\
                       .append(" ").append(size).append(std::string(12-size.size(),' '))\
                       .append(" ").append(std::string(timeModified))\
                       .append(" ").append(e)\

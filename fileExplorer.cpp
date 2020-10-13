@@ -1,5 +1,8 @@
 #include "header.h"
 
+/*** nav ***/
+std::vector<std::string> navVec(0);
+int navVecIndex=-1;
 /*** data ***/
 struct editorConfig E;
 
@@ -138,8 +141,6 @@ void editorRefreshScreen() {
 
 /*** directory paths ***/
 
-
-
 std::string getFileName(){ // should return path of cursor location
     if(!E.overflow){
         std::string result=E.root;
@@ -165,7 +166,6 @@ std::string getFileName(){ // should return path of cursor location
         }
 
     }
-
 }
 
 /*** command mode ***/
@@ -240,6 +240,30 @@ void editorProcessKeypress() {
     case ARROW_DOWN:
         editorMoveCursor(c);
         break;
+    case ARROW_RIGHT:
+        if(navVecIndex+1 >= navVec.size()){
+            //do nothing
+        }
+        else{
+            navVecIndex++;
+            std::string currPath = navVec[navVecIndex];
+            E.root = currPath;
+            readDir(currPath);
+            printDir();
+        }
+        break;
+    case ARROW_LEFT:
+        if(navVecIndex <= 0){
+            //do nothing
+        }
+        else{
+            navVecIndex--;
+            std::string currPath = navVec[navVecIndex];
+            E.root = currPath;
+            readDir(currPath);
+            printDir();
+        }
+        break;
     case ESCAPE:
     case COLON:
         enterCommandMode();
@@ -257,8 +281,16 @@ void editorProcessKeypress() {
         printDir();
         break;
     case BACK_SPACE:
+        
         selectedPath = getParent(E.root);
         if(isDirectory(selectedPath)){
+            std::vector<std::string> newVec(0);
+            for(int i=0;i<=navVecIndex;i++){
+                newVec.push_back(navVec[i]);
+            }
+            navVec = newVec;
+            navVec.push_back(selectedPath);
+            navVecIndex++;
             E.root = selectedPath;
             readDir(selectedPath);
             printDir();
@@ -267,6 +299,8 @@ void editorProcessKeypress() {
     case ENTER:
         selectedPath =getFileName();
         if(isDirectory(selectedPath)){
+            navVec.push_back(selectedPath);
+            navVecIndex++;
             E.root = selectedPath;
             readDir(selectedPath);
             printDir();
@@ -295,6 +329,8 @@ void initEditor() {
     E.cy = 0;
     E.outputBuffer="";
     E.currDirFiles = std::vector<std::string>(0);
+    navVec.push_back(E.root);
+    navVecIndex++;
     if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
 }
 
