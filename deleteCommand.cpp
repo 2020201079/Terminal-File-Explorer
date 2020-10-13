@@ -6,6 +6,7 @@ void deleteFileCommandHelper(std::string filePath){
     }
 }
 void deleteFileCommand(){
+    E.status = "Delete file failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -20,6 +21,7 @@ void deleteFileCommand(){
         filePath = x.append("/").append(filePath);
     }
     deleteFileCommandHelper(filePath);
+    E.status = "File deleted";
 }
 
 
@@ -56,6 +58,7 @@ void deleteDirCommandHelper(std::string dirPath){
 }
 
 void deleteDirCommand(){
+    E.status = "delete dir failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -74,5 +77,6 @@ void deleteDirCommand(){
         dirPath = x.append("/").append(dirPath);
     }
     deleteDirCommandHelper(dirPath);
+    E.status = "delete dir succesful";
 }
 

@@ -73,11 +73,14 @@ void copyDirectory(std::string source,std::string destination){
 }
 
 void copyCommand(){
+    E.status = "copy failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
     if(arguments.size()<2){
+        E.status = "Number of arguments is less for copy";
         std::cout<<"Number of arguments is less"<<std::endl;
+        return;
     }
     std::string destination = arguments.back();
     if(isPathRelative(destination))
@@ -96,4 +99,5 @@ void copyCommand(){
             copyFile(source,destination);
         }
     }
+    E.status = " copy completed ";
 }

@@ -1,6 +1,7 @@
 #include "header.h"
 
 void gotoCommand(){
+    E.status = "goto failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -14,5 +15,18 @@ void gotoCommand(){
         auto temp = E.root;
         destinationFolder = temp.append("/").append(destinationFolder);
     }
-    E.root = destinationFolder;
+    if(isDirectory(destinationFolder)){
+        std::vector<std::string> newVec(0);
+        for(int i=0;i<=navVecIndex;i++){
+            newVec.push_back(navVec[i]);
+        }
+        navVec = newVec;
+        navVec.push_back(destinationFolder);
+        navVecIndex++;
+        E.root = destinationFolder;
+    }
+    else{
+        return;
+    }
+    E.status =" goto executed ";
 }

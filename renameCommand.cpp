@@ -38,6 +38,7 @@ void renameFile(std::string source,std::string newName){
 }
 
 void renameCommand(){
+    E.status = "rename failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -48,9 +49,11 @@ void renameCommand(){
     std::string source = getCompletePath(arguments[0]);
     if(isDirectory(source)){
         renameDirectory(source,newName);
+        E.status = "directory rename not implemented";
     }
     else{
         renameFile(source,newName);
         deleteFileCommandHelper(source);
+        E.status = "file renamed";
     }
 }

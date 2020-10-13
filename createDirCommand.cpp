@@ -1,6 +1,7 @@
 #include "header.h"
 
 void createDirCommand(){
+    E.status="create dir failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -25,4 +26,5 @@ void createDirCommand(){
         std::cout<<"couldn't set mode to dir "<<destinationDir<<std::endl;
         return;
     }
+    E.status="created directory";
 }

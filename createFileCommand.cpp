@@ -1,6 +1,7 @@
 #include "header.h"
 
 void createFileCommand(){
+    E.status = "create file failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -25,4 +26,5 @@ void createFileCommand(){
         std::cout<<"couldn't set mode to "<<destinationFile<<std::endl;
         return;
     }
+    E.status = "created file ";
 }

@@ -2,6 +2,7 @@
 #include "header.h"
 
 void moveCommand(){
+    E.status = "move failed";
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);
@@ -27,4 +28,5 @@ void moveCommand(){
             deleteFileCommandHelper(source);
         }
     }
+    E.status = "moved succesfully";
 }

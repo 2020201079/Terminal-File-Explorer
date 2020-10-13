@@ -17,6 +17,8 @@
 #include<grp.h>
 #include<fcntl.h>
 
+extern int navVecIndex;
+extern std::vector<std::string> navVec;
 /*** global variables ***/
 struct editorConfig {
     std::string root;

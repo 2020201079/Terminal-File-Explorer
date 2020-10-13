@@ -1,8 +1,9 @@
 #include "header.h"
 
 /*** nav ***/
-std::vector<std::string> navVec(0);
 int navVecIndex=-1;
+std::vector<std::string> navVec(0);
+
 /*** data ***/
 struct editorConfig E;
 
@@ -180,9 +181,10 @@ void enterCommandMode(){
     std::string commandModeOutput = E.outputBuffer;
     std::string cursorPositionCmd = "\x1b["+ std::to_string(E.screenrows-1) + ";" + std::to_string(1)+"H";
     commandModeOutput.append(cursorPositionCmd);//goto last line
-    commandModeOutput.append(E.status); 
+     
     commandModeOutput.append("\x1b[0K");// clear line from cursor right
      
+    commandModeOutput.append(E.status).append("\r\n");;
     commandModeOutput.append("command mode :");
     write(STDOUT_FILENO,commandModeOutput.c_str(),commandModeOutput.length());
     disableRawMode();
