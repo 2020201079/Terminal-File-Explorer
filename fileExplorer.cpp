@@ -168,6 +168,12 @@ std::string getFileName(){ // should return path of cursor location
     }
 }
 
+void updateDisplayCommandMode(){
+    E.normalMode = true;
+    readDir(E.root);
+    printDir();
+    enterCommandMode();
+}
 /*** command mode ***/
 void enterCommandMode(){
     E.normalMode = false;
@@ -182,22 +188,49 @@ void enterCommandMode(){
     while(E.normalMode == false){
         std::string cmd;
         std::cin>>cmd;
-        if(cmd == "copy")
+        if(cmd == "quit"){
+            enableRawMode();
+            E.normalMode = true;
+            readDir(E.root);
+            printDir();
+        }
+        if(cmd == "copy"){
             copyCommand();
-        else if(cmd == "move")
+            updateDisplayCommandMode();
+        }
+        else if(cmd == "move"){
             moveCommand();
-        else if(cmd == "rename")
+            updateDisplayCommandMode();
+        }
+        else if(cmd == "rename"){
             renameCommand();
-        else if(cmd=="create_file")
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="create_file"){
             createFileCommand();
-        else if(cmd=="create_dir")
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="create_dir"){
             createDirCommand();
-        else if(cmd=="delete_file")
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="delete_file"){
             deleteFileCommand();
-        else if(cmd=="delete_dir")
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="delete_dir"){
             deleteDirCommand();
-        else
-            std::cout<<"Enter a valid command "<<std::endl;
+            updateDisplayCommandMode();
+        }
+        else if(cmd=="goto"){
+            gotoCommand();
+            updateDisplayCommandMode();
+        }
+        else{
+            std::cout<<cmd<<" :Not a valid command "<<std::endl;
+            std::string wrongArgs;
+            getline(std::cin,wrongArgs);
+        }
     }
 
 }

@@ -37,11 +37,14 @@ struct editorConfig {
 extern struct editorConfig E;
 
 /*** global methods ***/
+void enterCommandMode();
+void updateDisplayCommandMode();
 void copyCommand();
 void createFileCommand();
 void createDirCommand();
 void deleteFileCommand();
 void deleteDirCommand();
+void gotoCommand();
 void moveCommand();
 void renameCommand();
 std::vector<std::string> getArgs(std::string input);

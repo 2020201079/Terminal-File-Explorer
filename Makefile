@@ -1,5 +1,5 @@
-fileExplorer: fileExplorer.o copyCommand.o createFileCommand.o deleteCommand.o createDirCommand.o utilities.o
-	g++ -o fileExplorer fileExplorer.o copyCommand.o createFileCommand.o deleteCommand.o createDirCommand.o utilities.o
+fileExplorer: fileExplorer.o copyCommand.o createFileCommand.o deleteCommand.o createDirCommand.o utilities.o gotoCommand.o
+	g++ -o fileExplorer fileExplorer.o copyCommand.o createFileCommand.o deleteCommand.o createDirCommand.o utilities.o gotoCommand.o
 
 fileExplorer.o: fileExplorer.cpp header.h utilities.cpp
 	g++ -c fileExplorer.cpp utilities.cpp
@@ -15,6 +15,9 @@ createDirCommand.o: createDirCommand.cpp header.h utilities.cpp
 
 deleteCommand.o: deleteCommand.cpp header.h utilities.cpp
 	g++ -c deleteCommand.cpp utilities.cpp
+
+gotoCommand.o: gotoCommand.cpp header.h utilities.cpp
+	g++ -c gotoCommand.cpp utilities.cpp
 
 clean:
 	rm *.o fileExplorer
