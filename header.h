@@ -59,3 +59,5 @@ std::string getCompletePath(std::string fileName); // returns absolute path unti
 bool isPathRelative(std::string path);//check if it starts with '~' or '.'
 std::string relativeToAbsolute(std::string path);
 void printEntry(std::string e,int lineNo);
+void copyFile(std::string source,std::string destinationFolder);
+void copyDirectory(std::string source,std::string destination);

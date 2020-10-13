@@ -10,6 +10,10 @@ void createDirCommand(){
     std::string destinationFolder = arguments.back();
     if(isPathRelative(destinationFolder))
         destinationFolder = relativeToAbsolute(destinationFolder);
+    else{
+        auto temp = E.root;
+        destinationFolder = temp.append("/").append(destinationFolder);
+    }
     std::string dirName = arguments[0];
     std::string destinationDir =destinationFolder.append("/").append(dirName);
     int status = mkdir(destinationDir.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);

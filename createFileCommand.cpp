@@ -13,6 +13,10 @@ void createFileCommand(){
     std::string destinationFolder = arguments.back();
     if(isPathRelative(destinationFolder))
         destinationFolder = relativeToAbsolute(destinationFolder);
+    else{
+        auto temp = E.root;
+        destinationFolder = temp.append("/").append(destinationFolder);
+    }
     std::string fileName = arguments[0];
     std::string destinationFile =destinationFolder.append("/").append(fileName);
     int fdDest = open(destinationFile.c_str(),O_RDWR|O_CREAT,0777);

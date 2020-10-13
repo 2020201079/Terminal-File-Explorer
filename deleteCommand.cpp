@@ -56,7 +56,6 @@ void deleteDirCommandHelper(std::string dirPath){
 }
 
 void deleteDirCommand(){
-    std::cout<<"Need to implement delete dir command !"<<std::endl;
     std::string input;
     getline(std::cin,input);
     std::vector<std::string> arguments = getArgs(input);

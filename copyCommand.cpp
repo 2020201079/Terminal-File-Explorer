@@ -38,7 +38,38 @@ void copyFile(std::string source,std::string destinationFolder){
 }
 
 void copyDirectory(std::string source,std::string destination){
-    
+    std::string fileName = source.substr(source.find_last_of("/\\")+1,source.size()-source.find_last_of("/\\"));
+    std::string destinationFolder =destination.append("/").append(fileName);
+    int status = mkdir(destinationFolder.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if(status < 0){
+        std::cout<<"couldn't create dir "<<destinationFolder<<std::endl;
+        return;
+    }
+    if(chmod(destinationFolder.c_str(),0777)<0){
+        std::cout<<"couldn't set mode to dir "<<destinationFolder<<std::endl;
+        return;
+    }
+
+    DIR *dr = opendir(source.c_str());
+
+    if(dr == NULL){
+        die(source.append("could not open for copy ").c_str());
+        return;
+    }
+    struct dirent *de;
+    while((de = readdir(dr))!=NULL){
+        if(std::string(de->d_name)=="." || std::string(de->d_name)=="..")
+            continue;
+        
+        else if(de->d_type==DT_DIR){
+                std::string dirInside = source;
+                copyDirectory(dirInside.append("/").append(de->d_name),destinationFolder);
+        }
+        else{
+            std::string filePath = source; 
+            copyFile(filePath.append("/").append(de->d_name),destinationFolder);
+        }
+    }
 }
 
 void copyCommand(){
@@ -51,6 +82,10 @@ void copyCommand(){
     std::string destination = arguments.back();
     if(isPathRelative(destination))
         destination = relativeToAbsolute(destination);
+    else{
+        auto temp = E.root;
+        destination = temp.append("/").append(destination);
+    }
     arguments.pop_back();
     for(std::string arg : arguments ){
         std::string source = getCompletePath(arg);
@@ -61,6 +96,4 @@ void copyCommand(){
             copyFile(source,destination);
         }
     }
-
-    
 }
