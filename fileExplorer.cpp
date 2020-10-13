@@ -203,7 +203,7 @@ void enterCommandMode(){
             updateDisplayCommandMode();
         }
         else if(cmd == "rename"){
-            renameCommand();
+            //renameCommand();
             updateDisplayCommandMode();
         }
         else if(cmd=="create_file"){

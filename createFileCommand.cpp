@@ -1,8 +1,5 @@
 #include "header.h"
 
-void moveCommand(){};
-void renameCommand(){};
-
 void createFileCommand(){
     std::string input;
     getline(std::cin,input);

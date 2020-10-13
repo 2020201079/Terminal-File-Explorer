@@ -61,3 +61,5 @@ std::string relativeToAbsolute(std::string path);
 void printEntry(std::string e,int lineNo);
 void copyFile(std::string source,std::string destinationFolder);
 void copyDirectory(std::string source,std::string destination);
+void deleteDirCommandHelper(std::string dirPath);
+void deleteFileCommandHelper(std::string filePath);
