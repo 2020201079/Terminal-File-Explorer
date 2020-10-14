@@ -29,4 +29,4 @@ search.o: search.cpp header.h utilities.cpp
 	g++ -c search.cpp utilities.cpp
 
 clean:
-	rm *.o fileExplorer
+	rm search.o renameCommand.o moveCommand.o gotoCommand.o deleteCommand.o createDirCommand.o createFileCommand.o copyCommand.o utilities.o fileExplorer.o

@@ -1,0 +1,10 @@
+How to run:
+    make
+    make clean
+    ./fileExplorer
+
+To quit command mode please tpe "quit" then press enter. You will go back to normal mode.
+
+To enter command mode press colon(:) or esc.
+
+Make sure terminal is wide enough so that only only one row per entry.
